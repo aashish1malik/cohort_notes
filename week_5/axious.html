@@ -1,0 +1,27 @@
+ <!-- https://petal-estimate-4e9.notion.site/HTTP-Deep-dive-d59b6336fa5a46daa56c21063578d400 -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> <!-- ✅ Load Axios correctly -->
+</head>
+<body>
+    LINKEDLN
+    <div id="posts"></div>
+    <script>
+        async function getrecent(){
+        
+        const response=await axios.get("https://jsonplaceholder.typicode.com/posts/1");
+       
+        //  dom manipulation
+         const data=response.data;
+         document.getElementById("posts").innerHTML=data.body;
+        }
+        getrecent();
+      </script>
+</body>
+</html>
