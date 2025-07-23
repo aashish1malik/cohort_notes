@@ -1,32 +1,35 @@
 // https://petal-estimate-4e9.notion.site/Creating-an-express-app-a01ad6db6d544d2b84fd1ff5bd057abe
 
 const express =require('express');
+const jwt=require("jsonwebtoken");
 
 const app=express();
 app.use(express.json());
 
+const JWT_SECRET="iamaashish";
+
 const users=[];
 // return random long string
-function generateToken(){
-     let options = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
-         'i', 'j', 'k', 'l','m', 'n', 'o', 'p', 'q', 'r', 's',
-          't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 
-          'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-           'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
-            'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6',
-             '7', '8', '9'];
+// function generateToken(){
+//      let options = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+//          'i', 'j', 'k', 'l','m', 'n', 'o', 'p', 'q', 'r', 's',
+//           't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 
+//           'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+//            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W',
+//             'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6',
+//              '7', '8', '9'];
 
-    let token = "";
-    for (let i = 0; i < 32; i++) {
-        //  Math.random gives you between zero and 1
-        // optioms.length( )    between 0 and 42
-        // floor 11.1 =>11  , 222.331=>22
-        token += options[Math.floor(Math.random() * options.length)];
-    }
-    return token;
+//     let token = "";
+//     for (let i = 0; i < 32; i++) {
+//         //  Math.random gives you between zero and 1
+//         // optioms.length( )    between 0 and 42
+//         // floor 11.1 =>11  , 222.331=>22
+//         token += options[Math.floor(Math.random() * options.length)];
+//     }
+//     return token;
 
-    //  return Math.random()  return a long random integer 
-}
+//     //  return Math.random()  return a long random integer 
+// }
 
 
 
@@ -72,8 +75,12 @@ app.post('/signin',function(req,res){
 
     })
     if(user){
-        const token=generateToken();
-        user.token=token;
+        // const token=generateToken();
+        const token=jwt.sign({
+            username:username
+    },JWT_SECRET);
+
+        // user.token=token;
         res.json({
             token:token
         })
@@ -93,9 +100,13 @@ app.post('/signin',function(req,res){
 app.get('/me',function(req,res){
     // add in header during get request name is token
     const token=req.headers.token
+    const decodedinfo=jwt.verify(token,JWT_SECRET);    // {username:JOHN}
+    const username=decodedinfo.username 
     // const user = users.find(user => user.token === token);
     const user=users.find(function(u){
-        if(u.token==token){
+        // if(u.token==token)
+        if(u.username==username)
+            {
             return true;
         }
         else{
